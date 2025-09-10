@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package format="3">
+  <name>mission_reporter</name>
+  <version>1.0.0</version>
+  <description>Report mission status to web server.</description>
+  <author email="vlkjan6@fel.cvut.cz">Jan Vlk</author>
+  <maintainer email="vlkjan6@fel.cvut.cz">Jan Vlk</maintainer>
+  <license>BSD-3-Clause</license>
+
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
