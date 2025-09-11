@@ -29,6 +29,7 @@ class MissionReporter(Node):
 
         self.data = {"robot_id": robot_id}
         self.current_waypoint = 0
+        self.waypoints_gps = []
         self.pose_gps = None
         self.pose_ekf = None
 
@@ -83,7 +84,8 @@ class MissionReporter(Node):
                 self.get_logger().info("Data sent successfully!")
             elif response.status_code == 202:
                 self.get_logger().warn("Failed with status: Missing path.")
-                self.send_data_url("path")
+                if self.waypoints_gps:
+                    self._send_data_url("path")
             else:
                 self.get_logger().error(
                     f"Failed to send data. Status code: {response.status_code}"
@@ -119,9 +121,13 @@ class MissionReporter(Node):
 
     def _gps_callback(self, msg):
         self.pose_gps = {"lat": msg.latitude, "lon": msg.longitude}
+        if self.pose_ekf and self.waypoints_gps:
+            self._send_data_url("update")
 
     def _ekf_callback(self, msg):
         self.pose_ekf = {"lat": msg.latitude, "lon": msg.longitude}
+        if self.pose_gps and self.waypoints_gps:
+            self._send_data_url("update")
 
     def _path_callback(self, msg):
         waypoints = self._convert_path_latlon(msg)
