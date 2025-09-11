@@ -15,15 +15,17 @@ from tf2_geometry_msgs import do_transform_pose_stamped
 from tf2_ros.transform_listener import TransformListener
 
 
-# SERVER_URL = "https://robot-tracker.felk.cvut.cz/api/update_data"
-SERVER_URL = "http://localhost:5001/api/update_data"
+SERVER_URL = "https://robot-tracker.felk.cvut.cz/api/update_data"
+# SERVER_URL = "http://localhost:5001/api/update_data"
 
 
 class MissionReporter(Node):
     def __init__(self):
         super().__init__("mission_reporter")
         self.declare_parameter("robot_id", "helhest")
+        self.declare_parameter("path_topic", "/path")
         robot_id = self.get_parameter("robot_id").get_parameter_value().string_value
+        path_topic = self.get_parameter("path_topic").get_parameter_value().string_value
 
         self.data = {"robot_id": robot_id}
         self.current_waypoint = 0
@@ -37,7 +39,9 @@ class MissionReporter(Node):
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer, self)
 
-        self.path_sub = self.create_subscription(Path, "/path", self._path_callback, 10)
+        self.path_sub = self.create_subscription(
+            Path, path_topic, self._path_callback, 10
+        )
         self.gps_sub = self.create_subscription(
             NavSatFix, "/gps/fix", self._gps_callback, 10
         )

@@ -16,6 +16,7 @@ def generate_launch_description():
                 parameters=[
                     {
                         "robot_id": "helhest",
+                        "path_topic": "/plan",
                     }
                 ],
             )
